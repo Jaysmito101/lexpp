@@ -44,6 +44,11 @@ You are all done to use lexpp!
 
 ### String Parsing
 
+    std::stringg data = "some text to parse! ";
+    std::vector<std::string> tokens = lexpp::lex(data, " ;\n");
 
+    for(std::string& token : tokens){
+        std::cout << token << std::endl;
+    }
 
 
