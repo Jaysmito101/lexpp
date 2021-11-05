@@ -97,3 +97,35 @@ Now the Lexing
     for(lexpp::Token& token : tokens){
         std::cout << TokenToString(token.type) << " -> " << token.value << std::endl;
     }
+
+### Using the `TokenParser` class
+
+We need to extend the `TokenParser` class to have our cuastom token parser
+
+    class MyTokenParser : public lexpp::TokenParser
+    {
+    public:
+    MyTokenParser(std::string data, std::string separators)
+    :TokenParser(data, separators, false){}
+
+    virtual int process_token(std::string& token, bool* discard, bool isSeparator) override
+    {
+        if(std::find(keywords.begin(), keywords.end(), token) != keywords.end())
+            return MyTokens::Keyword;
+        else if(is_number(token))
+            return MyTokens::Number;
+        else if(isSeparator)
+            return MyTokens::Other;
+        else
+            return MyTokens::String;
+    }    
+
+    std::vector<std::string> keywords = {"for", "void", "return", "if", "int"};
+    };
+    
+Now using the class with the lexer
+
+    std::vector<lexpp::Token> tokens =     lexpp::lex(std::make_shared<MyTokenParser>(data, "\n :,[]{}().\t"));
+    for(lexpp::Token& token : tokens){
+        std::cout << TokenToString(token.type) << " -> " << token.value << std::endl;
+    }
