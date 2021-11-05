@@ -26,8 +26,24 @@ Lexpp is very powerful and can be used for almost all parsing needs!
 
 You can check the <a  href="https://github.com/Jaysmito101/lexpp/tree/master/examples">examples/</a> for more elaborate usage.
 
-## Basic Examples
+# How to Use
 
-### Basic String Parsing
+Just place the `lexpp.h` file in your project include directory.
+
+In one cpp file define `LEXPP_IMPLEMENTATION` before importing lexpp like  this:
+
+
+    #define LEXPP_IMPLEMENTATION
+    #include "lexpp.h"
+    
+You are all done to use lexpp!
+
+
+
+# Basic Examples
+
+### String Parsing
+
+
 
 
