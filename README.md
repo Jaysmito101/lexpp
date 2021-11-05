@@ -60,3 +60,40 @@ You are all done to use lexpp!
         std::cout << token << std::endl;
     }
 
+
+### Using Custom Token Classifier
+
+
+    enum MyTokens{
+        Keyword = 0,
+        Number,
+        String,
+        Other
+    };
+    
+    static std::string TokenToString(int tok){
+    switch(tok){
+        case Keyword: return "Keyword";
+        case Number:  return "Number";
+        case String:  return "String";
+        case Other:   return "Other";
+    }
+    }
+
+
+Now the Lexing
+
+    std::vector<std::string> keywords = {"for", "void", "return", "if", "int"};
+    std::vector<lexpp::Token> tokens = lexpp::lex(data, {"<=", "<<", "\n", "::", ",", "}", "{", "(", ")" ";", " "}, [keywords](std::string& token, bool* discard, bool is_separator) -> int {
+        if(std::find(keywords.begin(), keywords.end(), token) != keywords.end()){
+            return MyTokens::Keyword;
+        }
+        if(is_number(token))
+            return MyTokens::Number;
+        else
+            return MyTokens::String;
+    }, false);
+
+    for(lexpp::Token& token : tokens){
+        std::cout << TokenToString(token.type) << " -> " << token.value << std::endl;
+    }
