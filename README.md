@@ -129,3 +129,74 @@ Now using the class with the lexer
     for(lexpp::Token& token : tokens){
         std::cout << TokenToString(token.type) << " -> " << token.value << std::endl;
     }
+
+### Making an email parser with lexpp
+
+First a strutto store out data
+
+    struct Email{
+        std::string name;
+        std::string domainFront;
+        std::string domainEnd;
+        std::string domain;
+    };
+    
+Now we need to make our custom token parser for email parsing
+
+    class EmailTokenParser : public lexpp::TokenParser
+    {
+    public:
+    EmailTokenParser(std::string data, std::string separators = "\n@.")
+    :TokenParser(data, separators, true){}
+
+    virtual int process_token(std::string& token, bool* discard, bool isSeparator) override
+    {
+        if(isSeparator){
+            if(ci == 2){
+                currMail.domain = currMail.domainFront + "." + currMail.domainEnd;
+                emailIds.push_back(currMail);
+                ci = 0;
+                *discard = true;
+                return 0;  
+            }
+            if(token.size() <= 0){
+                *discard = true;
+                return 0;  
+            }
+            if(token == "\n"){
+                ci = 0;
+                *discard = true;
+                return 0;  
+            }
+            else if(token == "@"){
+                ci = 1;
+                *discard = true;
+                return 0;                
+            }
+            else if(token == "."){
+                ci = 2;
+                *discard = true;
+                return 0;                
+            }
+        }
+
+        if(ci == 0)
+            currMail.name = token;
+        else if(ci == 1)
+            currMail.domainFront = token;
+        else if(ci == 2)
+            currMail.domainEnd = token;
+    }    
+
+    int ci = 0;
+    Email currMail;
+    std::vector<Email> emailIds;
+    };
+    
+Now finallh calling lex
+
+    std::shared_ptr<EmailTokenParser> tok_parser = std::make_shared<EmailTokenParser>(data+"\n", "\n@.");
+    lexpp::lex(tok_parser);
+    for(Email& email : tok_parser->emailIds){
+        std::cout << "Email : \nNAME: " << email.name << "\nDOMAIN : " << email.domain << std::endl;
+    }
