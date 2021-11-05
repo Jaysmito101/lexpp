@@ -18,3 +18,16 @@
 
 # lexpp
 Small Extremely Powerful Header Only C++ Lexical Analyzer/String Parser Library
+
+
+Lexpp is made with simplicity and size in mind. The entire library is about 500 lines!
+
+Lexpp is very powerful and can be used for almost all parsing needs!
+
+You can check the <a  href="https://github.com/Jaysmito101/lexpp/tree/master/examples">examples/</a> for more elaborate usage.
+
+## Basic Examples
+
+### Basic String Parsing
+
+
