@@ -1,5 +1,5 @@
 #define LEXPP_IMPLEMENTATION
-#include "lexpp.h"
+#include "../lexpp.h"
 
 #include <iostream>
 #include <string>
@@ -19,7 +19,7 @@ class EmailTokenParser : public lexpp::TokenParser
     EmailTokenParser(std::string data, std::string separators = "\n@.")
     :TokenParser(data, separators, true){}
 
-    virtual int process_token(std::string& token, bool* discard, bool isSeparator) override
+    virtual int process_token(std::string& token, bool* discard, bool isSeparator, lexpp::Token* tok) override
     {
         if(isSeparator){
             if(ci == 2){

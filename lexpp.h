@@ -19,7 +19,7 @@ namespace lexpp{
         std::string get_data();
         bool include_separators();
 
-        virtual int process_token(std::string& token, bool* discard, bool isSeparator) = 0;
+        virtual int process_token(std::string& token, bool* discard, bool isSeparator, Token* tok) = 0;
     
         private:
         std::string _data;
@@ -31,6 +31,8 @@ namespace lexpp{
     {
         std::string value;
         int type;
+        void* userdata;
+        int location;
     };
 
     // To check is a string ends with another string
@@ -44,6 +46,9 @@ namespace lexpp{
     
     // Docs comming soon ...
     std::vector<Token> lex(std::string data, std::vector<std::string> separators, std::function<int(std::string&, bool*, bool)> tokenFunction, bool includeSeparators = false);
+
+    // Docs comming soon ...
+    std::vector<Token> lex(std::string data, std::vector<std::string> separators, std::function<int(std::string&, bool*, bool, Token*)> tokenFunction, bool includeSeparators = false);
 
     // Docs comming soon ...
     std::vector<Token> lex(std::shared_ptr<TokenParser> parser);
@@ -163,6 +168,54 @@ namespace lexpp{
         return tokens;
     }
 
+    std::vector<Token> lex(std::string data, std::vector<std::string> separators, std::function<int(std::string&, bool*, bool, Token*)> tokenFunction, bool includeSeparators)
+     {
+           // Store individual tokens
+        std::string token;
+        // The tokens for return
+        std::vector<Token> tokens;
+        for(int i = 0 ; i < data.size() ; i++){
+            // If the token string ends with a separator then push the token before it to tokens list
+
+            std::string sep = "";
+            for(std::string& separator : separators){
+                if(ends_with(token, separator)){
+                    sep = separator;
+                    break;
+                }
+            }
+            if(sep != ""){
+                // Only push token if its length > 0
+                token = token.substr(0, token.size() - sep.size());
+                if(token.size() > 0){
+                    Token tok;
+                    bool discard = false;
+                    tok.type = tokenFunction(token, &discard, false, &tok);
+                    tok.value = token;
+                    if(!discard)
+                        tokens.push_back(tok);
+                }
+                if(includeSeparators){
+                    Token tok;
+                    bool discard = false;
+                    tok.type = tokenFunction(sep, &discard, true, &tok);
+                    tok.value = sep;
+                    if(!discard)
+                        tokens.push_back(tok);
+                }
+                token = "";
+            }
+            token += data[i];
+        }
+        Token tok;
+        bool discard = false;
+        tok.type = tokenFunction(token, &discard, false, &tok);
+        tok.value = token;
+        if(!discard)
+            tokens.push_back(tok);
+        return tokens;
+    }
+
     std::vector<Token> lex(std::shared_ptr<TokenParser> parser)
     {
         std::string data = parser->get_data();
@@ -188,7 +241,7 @@ namespace lexpp{
                 if(token.size() > 0){
                     Token tok;
                     bool discard = false;
-                    tok.type = parser->process_token(token, &discard, false);
+                    tok.type = parser->process_token(token, &discard, false, &tok);
                     tok.value = token;
                     if(!discard)
                         tokens.push_back(tok);
@@ -196,7 +249,7 @@ namespace lexpp{
                 if(includeSeparators){
                     Token tok;
                     bool discard = false;
-                    tok.type = parser->process_token(sep, &discard, true);
+                    tok.type = parser->process_token(sep, &discard, true, &tok);
                     tok.value = sep;
                     if(!discard)
                         tokens.push_back(tok);
@@ -207,7 +260,7 @@ namespace lexpp{
         }
         Token tok;
         bool discard = false;
-        tok.type = parser->process_token(token, &discard, false);
+        tok.type = parser->process_token(token, &discard, false, &tok);
         tok.value = token;
         if(!discard)
             tokens.push_back(tok);

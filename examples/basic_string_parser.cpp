@@ -1,5 +1,5 @@
 #define LEXPP_IMPLEMENTATION
-#include "lexpp.h"
+#include "../lexpp.h"
 
 #include <iostream>
 #include <string>

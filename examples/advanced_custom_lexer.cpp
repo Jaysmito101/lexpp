@@ -1,5 +1,5 @@
 #define LEXPP_IMPLEMENTATION
-#include "lexpp.h"
+#include "../lexpp.h"
 
 #include <iostream>
 #include <string>
@@ -35,7 +35,7 @@ class MyTokenParser : public lexpp::TokenParser
     MyTokenParser(std::string data, std::string separators)
     :TokenParser(data, separators, false){}
 
-    virtual int process_token(std::string& token, bool* discard, bool isSeparator) override
+    virtual int process_token(std::string& token, bool* discard, bool isSeparator, lexpp::Token* tok) override
     {
         if(std::find(keywords.begin(), keywords.end(), token) != keywords.end())
             return MyTokens::Keyword;
