@@ -132,7 +132,7 @@ Now using the class with the lexer
 
 ### Making an email parser with lexpp
 
-First a strutto store out data
+First a strut to store out data
 
     struct Email{
         std::string name;
@@ -193,10 +193,26 @@ Now we need to make our custom token parser for email parsing
     std::vector<Email> emailIds;
     };
     
-Now finallh calling lex
+Now finally calling lex
 
     std::shared_ptr<EmailTokenParser> tok_parser = std::make_shared<EmailTokenParser>(data+"\n", "\n@.");
     lexpp::lex(tok_parser);
     for(Email& email : tok_parser->emailIds){
         std::cout << "Email : \nNAME: " << email.name << "\nDOMAIN : " << email.domain << std::endl;
     }
+
+
+# Support
+
+I am just a Highschool student so I may not have the best quality of code but still i am trying my best to write good code!
+
+Any support would be highly appretiated!
+
+For example you could add a feature and contribute via pull requests or you could even report any issues with the program!
+
+And the best thing you could do to support this project is spread word about this so that more people who might be interested in this may use this!
+
+Please considering tweeting about this! 
+
+
+<img alt="Visitors" src="https://visitor-badge.glitch.me/badge?page_id=Jaysmito101.lexpp&left_color=gray&right_color=green&style=for-the-badge">
