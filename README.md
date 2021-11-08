@@ -26,6 +26,9 @@ Lexpp is very powerful and can be used for almost all parsing needs!
 
 You can check the <a  href="https://github.com/Jaysmito101/lexpp/tree/master/examples">examples/</a> for more elaborate usage.
 
+# Docs : 
+### https://github.com/Jaysmito101/lexpp/wiki
+
 # How to Use
 
 Just place the `lexpp.h` file in your project include directory.
