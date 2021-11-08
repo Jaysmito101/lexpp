@@ -39,31 +39,28 @@ In one cpp file define `LEXPP_IMPLEMENTATION` before importing lexpp like  this:
 You are all done to use lexpp!
 
 
-
 # Basic Examples
 
-### String Parsing
-
-    std::string data = "some text to parse! ";
-    std::vector<std::string> tokens = lexpp::lex(data, " ;\n");
-
-    for(std::string& token : tokens){
-        std::cout << token << std::endl;
-    }
-
-### Some more string parsing
-
+## String parsing
+<details>
+    <summary> Click To See Code </summary>
+    
     std::string data = "some text to parse! ";
     std::vector<std::string> tokens = lexpp::lex(data, {"<=", "<<", "\n", "::", ",", "}", "{", ";", " "}, false);
 
     for(std::string& token : tokens){
         std::cout << token << std::endl;
     }
+        
+ </details>
 
 
-### Using Custom Token Classifier
-
-
+## Using Custom Token Classifier
+        
+Some Structs we will need
+<details>
+        <summary> Click To See Code </summary>
+        
     enum MyTokens{
         Keyword = 0,
         Number,
@@ -79,10 +76,14 @@ You are all done to use lexpp!
         case Other:   return "Other";
     }
     }
-
+        
+</details>
 
 Now the Lexing
-
+        
+<details>
+        <summary> Click To See Code </summary>
+        
     std::vector<std::string> keywords = {"for", "void", "return", "if", "int"};
     std::vector<lexpp::Token> tokens = lexpp::lex(data, {"<=", "<<", "\n", "::", ",", "}", "{", "(", ")" ";", " "}, [keywords](std::string& token, bool* discard, bool is_separator) -> int {
         if(std::find(keywords.begin(), keywords.end(), token) != keywords.end()){
@@ -97,11 +98,16 @@ Now the Lexing
     for(lexpp::Token& token : tokens){
         std::cout << TokenToString(token.type) << " -> " << token.value << std::endl;
     }
+    
+</details>
 
-### Using the `TokenParser` class
+## Using the `TokenParser` class
 
 We need to extend the `TokenParser` class to have our cuastom token parser
 
+<details>
+        <summary> Click To See Code </summary>
+        
     class MyTokenParser : public lexpp::TokenParser
     {
     public:
@@ -122,18 +128,28 @@ We need to extend the `TokenParser` class to have our cuastom token parser
 
     std::vector<std::string> keywords = {"for", "void", "return", "if", "int"};
     };
+        
+</details>
     
 Now using the class with the lexer
 
+<details>
+        <summary> Click To See Code </summary>
+            
     std::vector<lexpp::Token> tokens =     lexpp::lex(std::make_shared<MyTokenParser>(data, "\n :,[]{}().\t"));
     for(lexpp::Token& token : tokens){
         std::cout << TokenToString(token.type) << " -> " << token.value << std::endl;
     }
+            
+</details>
+            
+## Making an email parser with lexpp
 
-### Making an email parser with lexpp
-
-First a strut to store out data
-
+First a struct to store out data
+            
+<details>
+        <summary> Click To See Code </summary>     
+    
     struct Email{
         std::string name;
         std::string domainFront;
@@ -141,8 +157,13 @@ First a strut to store out data
         std::string domain;
     };
     
+</details>
+    
 Now we need to make our custom token parser for email parsing
 
+<details>
+        <summary> Click To See Code </summary>
+      
     class EmailTokenParser : public lexpp::TokenParser
     {
     public:
@@ -192,15 +213,20 @@ Now we need to make our custom token parser for email parsing
     Email currMail;
     std::vector<Email> emailIds;
     };
+      
+</details>
     
 Now finally calling lex
-
+<details>
+        <summary> Click To See Code </summary>
+    
     std::shared_ptr<EmailTokenParser> tok_parser = std::make_shared<EmailTokenParser>(data+"\n", "\n@.");
     lexpp::lex(tok_parser);
     for(Email& email : tok_parser->emailIds){
         std::cout << "Email : \nNAME: " << email.name << "\nDOMAIN : " << email.domain << std::endl;
     }
-
+    
+</details>
 
 # Support
 
