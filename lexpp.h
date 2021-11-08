@@ -46,15 +46,16 @@ namespace lexpp{
     class TokenParser
     {
         public:
+        TokenParser();
         TokenParser(std::string data, std::string separators = " \n", bool includeSeparators = false);
         TokenParser(std::string data, std::vector<std::string> separators = {" ", "\n"}, bool includeSeparators = false);
-        std::vector<std::string> get_separators();
-        std::string get_data();
+        virtual std::vector<std::string> get_separators();
+        virtual std::string get_data();
         bool include_separators();
 
         virtual int process_token(std::string& token, bool* discard, bool isSeparator, Token* tok) = 0;
     
-        private:
+        protected:
         std::string _data;
         std::vector<std::string> _separators;
         bool _includeSeparators;
@@ -310,6 +311,10 @@ namespace lexpp{
     {
         return _includeSeparators;
     }
+
+    TokenParser::TokenParser()
+    :_data(""), _includeSeparators(false)
+    {}
 
     TokenParser::TokenParser(std::string data, std::string separators, bool includeSeparators)
     :_data(data), _includeSeparators(includeSeparators)
