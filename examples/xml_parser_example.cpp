@@ -24,7 +24,14 @@ int main(int argc, char** argv){
 
     std::shared_ptr<lexpp::XMLParser> parser = std::make_shared<lexpp::XMLParser>(data);
     lexpp::lex(parser);
-    std::cout << parser->get_root_node();
+
+    lexpp::XMLDocumentNode* root = parser->get_root_node();
+
+    std::cout << (*root)["xml-stylesheet"]["CATALOG"]["PLANT"]["COMMON"].value << std::endl;
+
+    std::cout << std::endl;
+
+    std::cout << root;
 
     return 0;
 }

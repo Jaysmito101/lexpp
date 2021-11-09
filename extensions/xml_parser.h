@@ -32,7 +32,26 @@ SOFTWARE.
 namespace lexpp
 {
 
-    struct XMLDocumentNode{
+    class XMLDocumentNode{
+        public:
+
+        XMLDocumentNode operator[](std::string name) const;
+        XMLDocumentNode operator[](const char* name) const;
+
+        int size();
+        void push_back(XMLDocumentNode* node);
+        XMLDocumentNode* back();
+
+        std::vector<XMLDocumentNode*>::iterator begin();
+		std::vector<XMLDocumentNode*>::iterator end();
+		std::vector<XMLDocumentNode*>::reverse_iterator rbegin();
+		std::vector<XMLDocumentNode*>::reverse_iterator rend();
+        
+		std::vector<XMLDocumentNode*>::const_iterator begin() const;
+		std::vector<XMLDocumentNode*>::const_iterator end()	const;
+		std::vector<XMLDocumentNode*>::const_reverse_iterator rbegin() const;
+		std::vector<XMLDocumentNode*>::const_reverse_iterator rend() const;
+
         std::string name = "";
         std::string value = "";
         std::vector<XMLDocumentNode*> children;
@@ -44,6 +63,8 @@ namespace lexpp
     std::string to_string(XMLDocumentNode* node);
 
     std::ostream& operator<<(std::ostream& os, XMLDocumentNode* node);
+
+    std::ostream& operator<<(std::ostream& os, XMLDocumentNode node);
 
     class XMLParser : public TokenParser
     {
@@ -74,6 +95,51 @@ namespace lexpp
 // Implementations
 
 #ifdef LEXPP_IMPLEMENTATION
+
+    XMLDocumentNode XMLDocumentNode::operator[](std::string name)  const
+    {
+        for(auto child : children)
+        {
+            if(child->name == name)
+            {
+                return *child;
+            }
+        }
+        return XMLDocumentNode();
+    }
+
+     XMLDocumentNode XMLDocumentNode::operator[](const char* name)  const
+    {
+        std::string name_str(name);
+        for(auto child : children)
+        {
+            if(child->name == name_str)
+            {
+                return *child;
+            }
+        }
+        return XMLDocumentNode();
+    }
+
+    int XMLDocumentNode::size()
+    {
+        return children.size();
+    }
+
+    void XMLDocumentNode::push_back(XMLDocumentNode* node)
+    {
+        children.push_back(node);
+    }
+
+    std::vector<XMLDocumentNode*>::iterator XMLDocumentNode::begin()                        { return children.begin(); }
+	std::vector<XMLDocumentNode*>::iterator XMLDocumentNode::end()                          { return children.end(); }
+	std::vector<XMLDocumentNode*>::reverse_iterator XMLDocumentNode::rbegin()               { return children.rbegin(); }
+	std::vector<XMLDocumentNode*>::reverse_iterator XMLDocumentNode::rend()                 { return children.rend(); } 
+
+	std::vector<XMLDocumentNode*>::const_iterator XMLDocumentNode::begin() const            { return children.begin(); }
+	std::vector<XMLDocumentNode*>::const_iterator XMLDocumentNode::end() const              { return children.end(); }
+	std::vector<XMLDocumentNode*>::const_reverse_iterator XMLDocumentNode::rbegin() const   { return children.rbegin(); }
+	std::vector<XMLDocumentNode*>::const_reverse_iterator XMLDocumentNode::rend() const     { return children.rend(); }
 
     std::vector<std::pair<std::string, std::string>> stack_to_vector(std::stack<std::pair<std::string, std::string>> stack)
     {
@@ -112,13 +178,19 @@ namespace lexpp
         return os;
     }
 
+    std::ostream& operator<<(std::ostream& os, XMLDocumentNode node)
+    {
+        os << to_string(&node);
+        return os;
+    }
+
     XMLParser::XMLParser(std::string data)
     {
         _data = std::regex_replace(data, std::regex("</"), "\\<");
-        _data = _data.substr(_data.find_first_of("?>")+2);
+        _data = std::regex_replace(_data, std::regex("<[?]"), "<");
+        _data = std::regex_replace(_data, std::regex("[?]>"), ">");
+        _data += "\\<xml>";
         _separators = {" ", "\n", "\t", "\\<", "?", "<", ">", "=", "\""};
-        _nodeStack.push(new XMLDocumentNode());
-        _nodeStack.top()->name = "xml";
         _includeSeparators = true;
     }
 
@@ -135,8 +207,6 @@ namespace lexpp
 
     XMLDocumentNode* XMLParser::get_root_node()
     {
-        _nodeStack.top()->value = "";
-        _nodeStack.top()->attributes = std::vector<std::pair<std::string, std::string>>();
         return _nodeStack.top();
     }
 

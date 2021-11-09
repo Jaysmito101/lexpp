@@ -55,6 +55,7 @@ namespace lexpp{
 
         virtual int process_token(std::string& token, bool* discard, bool isSeparator, Token* tok) = 0;
         virtual void on_end();
+        virtual bool accept_separator(int location, std::string separator);
 
         protected:
         std::string _data;
@@ -258,8 +259,11 @@ namespace lexpp{
             std::string sep = "";
             for(std::string& separator : separators){
                 if(ends_with(token, separator)){
-                    sep = separator;
-                    break;
+                    if(parser->accept_separator(i - separator.size(), separator))
+                    {
+                        sep = separator;
+                        break;
+                    }
                 }
             }
             if(sep != ""){
@@ -300,7 +304,13 @@ namespace lexpp{
 
     void TokenParser::on_end()
     {
-        
+        // This is meant to be overridden if needed    
+    }
+
+    bool TokenParser::accept_separator(int location, std::string separator)
+    {
+        // This is meant to be overridden if needed
+        return true;
     }
 
     std::string TokenParser::get_data()
