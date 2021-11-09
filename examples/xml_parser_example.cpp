@@ -1,6 +1,6 @@
 #define LEXPP_IMPLEMENTATION
 #include "lexpp.h"
-#include "extensions/syntax_parser.h"
+#include "extensions/xml_parser.h"
 
 #include <iostream>
 #include <iomanip>
@@ -22,15 +22,9 @@ int main(int argc, char** argv){
     t.seekg(0);
     t.read(&data[0], size);
 
-    std::shared_ptr<lexpp::SyntaxParser> parser = std::make_shared<lexpp::SyntaxParser>(data);
+    std::shared_ptr<lexpp::XMLParser> parser = std::make_shared<lexpp::XMLParser>(data);
     lexpp::lex(parser);
+    std::cout << parser->get_root_node();
 
-    std::cout << std::setfill(' ') << std::left;
-
-    std::cout << std::setw(30) << "Token" << std::setw(30) << "Type" << std::endl;
-
-    for(lexpp::SyntaxToken& token : parser->get_tokens()){
-        std::cout << std::setw(30) << token.value << std::setw(30) << lexpp::to_string(token.type) << std::endl;
-    }    
     return 0;
 }

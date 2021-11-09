@@ -54,7 +54,8 @@ namespace lexpp{
         bool include_separators();
 
         virtual int process_token(std::string& token, bool* discard, bool isSeparator, Token* tok) = 0;
-    
+        virtual void on_end();
+
         protected:
         std::string _data;
         std::vector<std::string> _separators;
@@ -296,6 +297,11 @@ namespace lexpp{
     // Class Function Implementations
 
     // TokenParser
+
+    void TokenParser::on_end()
+    {
+        
+    }
 
     std::string TokenParser::get_data()
     {

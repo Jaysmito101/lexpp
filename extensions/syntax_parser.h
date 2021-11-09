@@ -74,6 +74,12 @@ namespace lexpp
 
     std::string to_string(SyntaxTokenType type);
 
+    std::string to_string(SyntaxParserLanguage language);
+
+    std::ostream& operator<<(std::ostream& os, SyntaxTokenType& tok);
+
+    std::ostream& operator<<(std::ostream& os, SyntaxParserLanguage& tok);
+
     class SyntaxParser : public TokenParser{
         public:
         SyntaxParser(std::string data, SyntaxParserLanguage language);
@@ -124,6 +130,47 @@ namespace lexpp
             default             : return "Unknown";
         }
         return "";
+    }
+
+    std::string to_string(SyntaxParserLanguage language)
+    {
+        switch(language)
+        {
+            case C               : return "C";
+            case CPlusPlus       : return "C++";
+            case Java            : return "Java";
+            case Python          : return "Python";
+            case CSharp          : return "C#";
+            case Rust            : return "Rust";
+            case Go              : return "Go";
+            case GLSL            : return "GLSL";
+            case HLSL            : return "HLSL";
+            case JavaScript      : return "JavaScript";
+            case Lua             : return "Lua";
+            case CoffeeScript    : return "CoffeeScript";
+            case TypeScript      : return "TypeScript";
+            case Swift           : return "Swift";
+            case Kotlin          : return "Kotlin";
+            case ObjectiveC      : return "ObjectiveC";
+            case ObjectiveCPlusPlus: return "ObjectiveC++";
+            case ActionScript    : return "ActionScript";
+            case Scala           : return "Scala";
+            default              : return "Unknown";
+        }
+        return "";
+    }
+
+
+    std::ostream& operator<<(std::ostream& os, SyntaxTokenType& tok)
+    {
+        os << to_string(tok);
+        return os;
+    }
+
+    std::ostream& operator<<(std::ostream& os, SyntaxParserLanguage& tok)
+    {
+        os << to_string(tok);
+        return os;
     }
 
     // Class Implementations
