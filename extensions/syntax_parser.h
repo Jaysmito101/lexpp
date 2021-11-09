@@ -80,6 +80,9 @@ namespace lexpp
         
         virtual int process_token(std::string& token, bool* discard, bool isSeparator, Token* tok) override;
 
+        virtual bool accept_token();
+        virtual void on_token(std::string& token, bool* discard, bool isSeparator, Token* tok);
+
         std::vector<SyntaxToken> get_tokens();
 
         virtual std::vector<std::string> get_operators();
@@ -90,7 +93,7 @@ namespace lexpp
         bool is_number(std::string& s);
         void push_token();
 
-        private:
+        protected:
         std::vector<std::string> _keywords;
         std::vector<std::string> _operators;
         SyntaxParserLanguage _language;
@@ -133,6 +136,17 @@ namespace lexpp
         _keywords = get_keywords();
         _operators = get_operators();
         _includeSeparators = true;
+    }
+
+    bool SyntaxParser::accept_token()
+    {
+        // This is meant to be overridden if needed
+        return true;
+    }
+
+    void SyntaxParser::on_token(std::string& token, bool* discard, bool isSeparator, Token* tok)
+    {
+        // This is meant to be overridden if needed
     }
 
     std::vector<SyntaxToken> SyntaxParser::get_tokens()
@@ -214,7 +228,10 @@ namespace lexpp
     void SyntaxParser::push_token()
     {
         if(_currentToken.type != SyntaxTokenType::None && _currentToken.value.size() > 0)
-            _synaxTokens.push_back(_currentToken);
+        {
+            if(accept_token())
+                _synaxTokens.push_back(_currentToken);
+        }
         _currentToken = SyntaxToken();
     }
 
@@ -324,6 +341,7 @@ namespace lexpp
             _currentToken.value += token;
         }
         *discard = true;
+        on_token(token, discard, isSeparator, tok);
         return 0;
     }
 
