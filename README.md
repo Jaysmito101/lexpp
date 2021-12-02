@@ -28,6 +28,7 @@ You can check the <a  href="https://github.com/Jaysmito101/lexpp/tree/master/exa
 
 # Docs : 
 ### https://github.com/Jaysmito101/lexpp/wiki
+### For any help join our discord server https://discord.gg/muq5nDxF9t
 
 # How to Use
 
